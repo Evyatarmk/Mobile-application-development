@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 300px;
+      margin: 50px auto;
+      padding: 20px;
+      border: 2px solid #007acc;
+      border-radius: 10px;
+      background-color: #f9f9f9;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Style for each input field */
+    input[type="text"],
+    input[type="number"] {
+      padding: 10px;
+      margin: 10px 0;
+      width: 100%;
+      font-size: 16px;
+      border: 1px solid #007acc;
+      border-radius: 5px;
+      background-color: #fff;
+    }
+
+    /* Style for the submit button */
+    input[type="submit"] {
+      padding: 10px 20px;
+      font-size: 16px;
+      color: white;
+      background-color: #007acc;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    /* Hover effect for the submit button */
+    input[type="submit"]:hover {
+      background-color: #005f99;
+    }
+
+    /* Style for the "Show" and "Quack" buttons */
+    input[type="button"] {
+      padding: 10px 20px;
+      font-size: 16px;
+      color: white;
+      background-color: #007acc;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      margin: 10px;
+    }
+
+    /* Hover effect for the "Show" and "Quack" buttons */
+    input[type="button"]:hover {
+      background-color: #005f99;
+    }
+
+    /* Style for the result display section */
+    #continer {
+      text-align: center;
+      padding: 20px;
+      margin-top: 20px;
+      background-color: #f1f1f1;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      width: 80%;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    #continer img {
+      max-width: 100%;
+      height: auto;
+      margin-top: 20px;
+    }
+  </style>
+  <script src="./Point.js"></script>
+
+</head>
+
+<body>
+
+  <script>
+    // Example points
+    const points = [
+      new Point(1, 1),
+      new Point(4, 5),
+      new Point(7, 8),
+      new Point(10, 2)
+    ];
+    const newDiv = document.createElement("div");
+    let str = `Points:</br>`
+    for (let index = 0; index < points.length; index++) {
+      let Point = points[index]
+      str += `${Point.Show()}</br>`;
+    }
+    str += `Length Route: ${calculateLengthRoute(points)}`
+    newDiv.innerHTML = str
+    document.body.appendChild(newDiv)
+
+
+
+  </script>
+</body>
+
+</html>

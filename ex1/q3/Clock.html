@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title> 
+  <style>
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 300px;
+  margin: 50px auto;
+  padding: 20px;
+  border: 2px solid #007acc;
+  border-radius: 10px;
+  background-color: #f9f9f9;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Style for each input field */
+input[type="text"], input[type="number"] {
+  padding: 10px;
+  margin: 10px 0;
+  width: 100%;
+  font-size: 16px;
+  border: 1px solid #007acc;
+  border-radius: 5px;
+  background-color: #fff;
+}
+
+/* Style for the submit button */
+input[type="submit"] {
+  padding: 10px 20px;
+  font-size: 16px;
+  color: white;
+  background-color: #007acc;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+/* Hover effect for the submit button */
+input[type="submit"]:hover {
+  background-color: #005f99;
+}
+
+/* Style for the "Show" and "Quack" buttons */
+input[type="button"] {
+  padding: 10px 20px;
+  font-size: 16px;
+  color: white;
+  background-color: #007acc;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin: 10px;
+}
+
+/* Hover effect for the "Show" and "Quack" buttons */
+input[type="button"]:hover {
+  background-color: #005f99;
+}
+
+/* Style for the result display section */
+#continer {
+  text-align: center;
+  padding: 20px;
+  margin-top: 20px;
+  background-color: #f1f1f1;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#continer img {
+  max-width: 100%;
+  height: auto;
+  margin-top: 20px;
+}
+
+  </style>
+  <script src="./Clock.js"></script>
+ 
+</head>
+<body>
+  <form onsubmit="createClock(event)">
+    <input type="number" min="0" max="23" id="ClockHour" placeholder="Enter Clock Hour" required step="any">
+
+    <input type="number" min="0" max="59" id="ClockMinute" placeholder="Enter Clock Minute" required step="any">
+    
+    <input type="number" min="0" max="59" id="ClockSecond" placeholder="Enter Clock Second" required step="any">
+
+    <input type="text" id="CountryName" placeholder="Enter Country Name" required>
+
+    <input type="submit" value="Create Clock" id="submitCreateClock">
+    <div id="numberOfClocks">number of clocks you create 5\0</div>
+  </form>
+
+
+
+
+  <script>
+
+    const Clocks=[];
+    const newDiv = document.createElement("div");
+    const submitCreateClock= document.getElementById('submitCreateClock')
+
+    function createClock(event){
+      event.preventDefault()
+      const hour = parseInt(document.getElementById('ClockHour').value);
+      const minute = parseInt(document.getElementById('ClockMinute').value);
+      const second = parseInt(document.getElementById('ClockSecond').value);
+      const countryName = document.getElementById('CountryName').value;
+
+    
+      let clock = new Clock(hour,minute,second,countryName);
+      Clocks.push(clock)
+       document.getElementById('ClockHour').value="";
+       document.getElementById('ClockMinute').value="";
+       document.getElementById('ClockSecond').value="";
+       document.getElementById('CountryName').value="";
+       document.getElementById('numberOfClocks').innerHTML=`number of clocks you create 5\\${Clocks.length}`;
+
+      if(Clocks.length==5){
+        submitCreateClock.disabled=true;
+        submitCreateClock.style.backgroundColor="#ccc"
+        for (let index = 0; index < Clocks.length; index++) {
+          let clock=Clocks[index]
+          newDiv.innerHTML+= `clock${index+1}:</br>
+                              country:${clock.countryName}</br> 
+                              Time:${clock.Show()}</br>
+                              time in Seconds:${clock.ConverToSeconds()}</br></br>`;
+          
+        }
+        document.body.appendChild(newDiv)
+
+        
+      }
+    }
+
+  </script>
+</body>
+</html>

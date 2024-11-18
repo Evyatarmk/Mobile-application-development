@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+
+  <style>
+    /* Center the container on the page */
+#continer {
+  display: flex;
+  flex-direction: row;
+  align-content: center;
+  justify-content: center;
+  margin: 50px auto;
+  padding: 20px;
+  border-radius: 10px;
+  width: 500px;
+  background-color: #f9f9f9;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Style the input field */
+#number {
+  padding: 8px;
+  width: 100%;
+  font-size: 16px;
+  border: 1px solid #007acc;
+  border-radius: 5px;
+}
+
+/* Style the buttons */
+input[type="button"] {
+  padding: 8px 16px;
+  margin: 5px;
+  font-size: 16px;
+  color: #fff;
+  background-color: #007acc;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+/* Hover effect for buttons */
+input[type="button"]:hover {
+  background-color: #005f99;
+}
+
+
+  </style>
+
+  
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  
+  <script src="./Counter.js"></script>
+</head>
+
+<body>
+  <div id="continer">
+    <input type="number" id="number" min="0" value="0" oninput="validatePositiveNumber()" placeholder="Enter a positive number" >
+    <input type="button" value="start" onclick="InitializeCounter()">
+    <input type="button" value="+" onclick="IncrementCounter()">
+    <input type="button" value="Go" onclick="GoCounter()">
+  </div>
+
+
+
+  <script>
+
+  const counter= new Counter(); 
+  const number =document.getElementById('number')
+  const continer =document.getElementById('continer')
+  const newDiv = document.createElement("div");
+
+  function InitializeCounter(){
+    counter.Initialize(number.value)
+  }
+  function IncrementCounter(){
+    counter.Increment()
+    console.log(counter)
+  }
+  function GoCounter(){
+    newDiv.innerHTML=counter.GO()
+    continer.after(newDiv)
+  }
+  function validatePositiveNumber() {
+    const input = document.getElementById('number');
+    const pattern = /^[0-9]\d*$/; // Positive integers or decimals
+    
+    if (!pattern.test(input.value)) {
+        input.value = ''; // Clear invalid input
+        alert("Please enter a positive number.");
+    }
+}
+  </script>
+ 
+</body>
+
+</html>

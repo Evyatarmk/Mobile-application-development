@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title> <style>
+    /* Style for the form container */
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 300px;
+  margin: 50px auto;
+  padding: 20px;
+  border: 2px solid #007acc;
+  border-radius: 10px;
+  background-color: #f9f9f9;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Style for each input field */
+input[type="text"], input[type="number"] {
+  padding: 10px;
+  margin: 10px 0;
+  width: 100%;
+  font-size: 16px;
+  border: 1px solid #007acc;
+  border-radius: 5px;
+  background-color: #fff;
+}
+
+/* Style for the submit button */
+input[type="submit"] {
+  padding: 10px 20px;
+  font-size: 16px;
+  color: white;
+  background-color: #007acc;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+/* Hover effect for the submit button */
+input[type="submit"]:hover {
+  background-color: #005f99;
+}
+
+/* Style for the "Show" and "Quack" buttons */
+input[type="button"] {
+  padding: 10px 20px;
+  font-size: 16px;
+  color: white;
+  background-color: #007acc;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin: 10px;
+}
+
+/* Hover effect for the "Show" and "Quack" buttons */
+input[type="button"]:hover {
+  background-color: #005f99;
+}
+
+/* Style for the result display section */
+#continer {
+  text-align: center;
+  padding: 20px;
+  margin-top: 20px;
+  background-color: #f1f1f1;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#continer img {
+  max-width: 100%;
+  height: auto;
+  margin-top: 20px;
+}
+
+  </style>
+  <script src="./Duck.js"></script>
+ 
+</head>
+<body>
+  <form onsubmit="createDuck(event)">
+    <input type="text" id="duckName" placeholder="Enter duck name" pattern="[A-Za-z ]+" title="Name can only contain letters and spaces" required>
+
+    <input type="text" id="duckColor" placeholder="Enter duck color" pattern="[A-Za-z ]+" title="Color can only contain letters and spaces" required>
+
+    <input type="number" min="0" value="0" id="duckAge" placeholder="Enter duck age" required step="any">
+
+    <input type="number" min="0" value="0" id="duckWeight" placeholder="Enter duck weight" required step="any">
+
+    <input type="text" id="duckImage" placeholder="Enter duck image URL" pattern="https?://.*\.(jpg|jpeg|png|gif)" title="Please enter a valid image URL (e.g. http://example.com/image.jpg)" required>
+
+    <input type="submit" value="Create Duck" id="submitCreateDuck">
+    <input type="button" value="Show" id="showDuck" onclick="Show()" style="visibility: hidden;">
+    <input type="button" value="Quack" id="quackDuck" onclick="Quack()" style="visibility: hidden;">
+  </form>
+
+
+
+
+  <script>
+
+    let myDuck; 
+    const ShowDuck= document.getElementById('ShowDuck')
+    const QuackDuck= document.getElementById('QuackDuck')
+    const submitCreateDuck= document.getElementById('submitCreateDuck')
+    const newDiv = document.createElement("div");
+
+    function createDuck(event){
+      event.preventDefault()
+      const name = document.getElementById('duckName').value;
+      const color = document.getElementById('duckColor').value;
+      const age = parseInt(document.getElementById('duckAge').value);
+      const weight = parseInt(document.getElementById('duckWeight').value);
+      const image = document.getElementById('duckImage').value;
+    
+      myDuck = new Duck(name, color, age, weight, image);
+      showDuck.style.visibility = "visible";
+      quackDuck.style.visibility = "visible";
+      submitCreateDuck.disabled=true;
+      submitCreateDuck.style.backgroundColor="#ccc"
+    }
+
+    function Show(){
+      newDiv.remove()
+      newDiv.innerHTML=myDuck.Show()
+      document.body.appendChild(newDiv)
+    }
+    function Quack(){
+      newDiv.remove()
+      newDiv.innerHTML=myDuck.Quack()
+      document.body.appendChild(newDiv)
+    }
+  </script>
+</body>
+</html>
