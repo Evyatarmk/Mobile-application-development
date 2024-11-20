@@ -94,11 +94,11 @@ input[type="button"]:hover {
 
     <input type="text" id="duckColor" placeholder="Enter duck color" pattern="[A-Za-z ]+" title="Color can only contain letters and spaces" required>
 
-    <input type="number" min="0" value="0" id="duckAge" placeholder="Enter duck age" required step="any">
+    <input type="number" min="0"  id="duckAge" placeholder="Enter duck age" required step="any">
 
-    <input type="number" min="0" value="0" id="duckWeight" placeholder="Enter duck weight" required step="any">
+    <input type="number" min="0" id="duckWeight" placeholder="Enter duck weight" required step="any">
 
-    <input type="text" id="duckImage" placeholder="Enter duck image URL" pattern="https?://.*\.(jpg|jpeg|png|gif)" title="Please enter a valid image URL (e.g. http://example.com/image.jpg)" required>
+    <input type="text" id="duckImage" placeholder="Enter duck image URL" required>
 
     <input type="submit" value="Create Duck" id="submitCreateDuck">
     <input type="button" value="Show" id="showDuck" onclick="Show()" style="visibility: hidden;">
