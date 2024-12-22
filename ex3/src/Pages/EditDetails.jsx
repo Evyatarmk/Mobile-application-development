@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
+import { saveFileToDB } from '../indexedDB/saveFileToDB ';
 
 export default function EditDetails(props) {
-   const [userData, setUserData] = useState(props.user);
+   const [userData, setUserData] = useState({...props.user,image:props.userImage});
    const [errors, setErrors] = useState({});
+   const [isUserImageChange, setIsUserImageChange] = useState(false);
   
     // Validation functions
     const validateUsername = (username) => {
@@ -20,7 +22,7 @@ export default function EditDetails(props) {
     };
   
     const validateImage = (file) => {
-      return file && (file.type === 'image/jpeg' || file.type === 'image/jpg');
+      return (!isUserImageChange || file && (file.type === 'image/jpeg' || file.type === 'image/jpg'));
     };
     const validateFirstName = (firstName) => {
       const regex = /^[a-zA-Z\u0590-\u05FF\s]+$/;
@@ -52,14 +54,19 @@ export default function EditDetails(props) {
     };
   
     const editUser=(user)=>{
-       if (UsersList.some(u => u.username === user.username)) {
+
+      let UsersList = JSON.parse(localStorage.getItem("UsersList"));
+       if (UsersList.some(u => u.username === user.username && u.email!=user.email)) {
          alert("השם משתמש הזה כבר תפוס אנא בחר אחר");
        }
        else{
-        let UsersList = localStorage.getItem("UsersList");
         UsersList[UsersList.indexOf(u=>u.email===user.email)]=user
         localStorage.setItem("UsersList",JSON.stringify(UsersList))
         sessionStorage.setItem("User", JSON.stringify(user));
+        if(isUserImageChange){
+          saveFileToDB(userData.image,userData.email)
+        }
+        props.sendToPUserDetails(userData)
         alert("המשתממש נערך");
        } 
      }
@@ -74,9 +81,7 @@ export default function EditDetails(props) {
       if (!validatePassword(userData.password)) {
         newErrors.password = 'הסיסמה חייבת להכיל 7-12 תווים, עם מספר, אות גדולה ותו מיוחד!';
       }
-      if (!validateConfirmPassword(userData.password, userData.confirmPassword)) {
-        newErrors.confirmPassword = 'אימות הסיסמה לא תואם!';
-      }
+    
       if (!validateImage(userData.image)) {
         newErrors.image = 'נא להעלות קובץ תמונה בפורמט JPG או JPEG בלבד!';
       }
@@ -97,9 +102,8 @@ export default function EditDetails(props) {
       }
   
       setErrors(newErrors);
-  
       if (Object.keys(newErrors).length === 0) {
-       
+        editUser(userData)
     };
     }
    
@@ -111,6 +115,7 @@ export default function EditDetails(props) {
         ...prevData,
         [name]: files ? files[0] : value,
       }));
+      setIsUserImageChange(files ? true : false)
     };
   
   
@@ -129,14 +134,9 @@ export default function EditDetails(props) {
             <input type="text" name="password" onChange={handleChange}  value={userData.password} />
             {errors.password && <div style={{ color: 'red' }}>{errors.password}</div>}
           </div>
-          <div style={styles.inputGroup}>
-            <label>אימות סיסמה</label>
-            <input type="password" name="confirmPassword" onChange={handleChange} value={userData.confirmPassword} />
-            {errors.confirmPassword && <div style={{ color: 'red' }}>{errors.confirmPassword}</div>}
-          </div>
+          
           <div style={styles.inputGroup}>
             <label>תמונה</label>
-            <img src={props.userImage}/>
             <input type="file" name="image" onChange={handleChange} />
             {errors.image && <div style={{ color: 'red' }}>{errors.image}</div>}
           </div>
@@ -157,7 +157,7 @@ export default function EditDetails(props) {
           </div>
           <div style={styles.inputGroup}>
             <label>עיר</label>
-            <select type="s" name="city" onChange={handleChange}>
+            <select type="s" name="city" onChange={handleChange} value={userData.city}>
               <option value="תל אביב">תל אביב</option>
               <option value="ירושלים">ירושלים</option>
               <option value="חיפה">חיפה</option>
@@ -167,12 +167,12 @@ export default function EditDetails(props) {
           </div>
           <div style={styles.inputGroup}>
             <label>שם רחוב</label>
-            <input type="text" name="street" onChange={handleChange} />
+            <input type="text" name="street" onChange={handleChange} value={userData.street}/>
             {errors.street && <div style={{ color: 'red' }}>{errors.street}</div>}
           </div>
           <div style={styles.inputGroup}>
             <label>מספר בית</label>
-            <input type="number" name="houseNumber" onChange={handleChange} />
+            <input type="number" name="houseNumber" onChange={handleChange} value={userData.houseNumber}/>
             {errors.houseNumber && <div style={{ color: 'red' }}>{errors.houseNumber}</div>}
           </div>
           <input type="submit" value="ערוך" style={styles.submitButton} />
@@ -190,6 +190,9 @@ export default function EditDetails(props) {
       minHeight: '100vh',
       backgroundColor: '#f7f7f7',
       padding: '20px',
+      borderRadius: '20px',
+      border:' #4CAF50 solid '
+     
     },
     form: {
       width: '100%',
@@ -217,6 +220,12 @@ export default function EditDetails(props) {
       fontSize: '14px',
       fontWeight: 'bold',
       color: '#333',
+    },
+    image: {
+      width: "100px",
+      height: "100px",
+      borderRadius: "50%",
+      border: "2px solid #ddd",
     },
     input: {
       width: '100%',

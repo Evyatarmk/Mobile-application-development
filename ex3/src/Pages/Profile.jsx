@@ -3,7 +3,7 @@ import EditDetails from './EditDetails'
 import { getFileFromDB } from '../indexedDB/getFileFromDB'
 
 export default function Profile(props) {
-  
+    
     const [userImage, setUserImage] = useState(null);
     const [user, setUser] = useState({})
     const [EditDetailsMode, setEditDetailsMode] = useState(false)
@@ -13,10 +13,12 @@ export default function Profile(props) {
   }
   const logoutUser=()=>{
     setUser(null)
+    setEditDetailsMode(false)
     sessionStorage.removeItem("User")
   }
   const UpdateUserEditDetails=(user)=>{
     setEditDetailsMode(false)
+    setUserImage(user.image);
     sessionStorage.setItem("User",JSON.stringify(user))
     setUser(user)
   }
@@ -37,14 +39,15 @@ export default function Profile(props) {
     },[]);
   
   return (
-    <>
+    <div>
     {user ? 
     (
       <div style={style.container}>
         <img src={userImage || "https://via.placeholder.com/100"} alt="Profile" style={style.image} />
         <div style={style.details}>
           <h2 style={style.heading}>פרופיל</h2>
-          <h3 style={style.name}>{user.firstName} {user.lastName}</h3>
+          <h3 style={style.name}>{user.username}</h3>
+          <p style={style.info}><strong>שם:</strong>{user.firstName} {user.lastName}</p>
           <p style={style.info}><strong>אימייל:</strong> {user.email}</p>
           <p style={style.info}><strong>תאריך לידה:</strong> {user.birthDate}</p>
           <p style={style.info}><strong> מקום מגורים:</strong> {user.street} {user.houseNumber}, {user.city}</p>
@@ -65,7 +68,7 @@ export default function Profile(props) {
     )}
     {EditDetailsMode ? <EditDetails sendToPUserDetails={UpdateUserEditDetails} user={user} userImage={userImage} /> : null}
 
-  </>
+  </div>
   );
   
 }
