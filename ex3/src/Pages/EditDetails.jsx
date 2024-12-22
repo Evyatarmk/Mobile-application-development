@@ -1,21 +1,8 @@
 import React, { useState } from 'react'
 
 export default function EditDetails(props) {
-   const [formData, setFormData] = useState({
-      username: '',
-      password: '',
-      confirmPassword: '',
-      image: null,
-      firstName: '',
-      lastName: '',
-      email: '',
-      birthDate: '',
-      city: '',
-      street: '',
-      houseNumber: '',
-    });
-  
-    const [errors, setErrors] = useState({});
+   const [userData, setUserData] = useState(props.user);
+   const [errors, setErrors] = useState({});
   
     // Validation functions
     const validateUsername = (username) => {
@@ -81,38 +68,37 @@ export default function EditDetails(props) {
       e.preventDefault();
       const newErrors = {};
   
-      if (!validateUsername(formData.username)) {
+      if (!validateUsername(userData.username)) {
         newErrors.username = 'שם משתמש לא תקין!';
       }
-      if (!validatePassword(formData.password)) {
+      if (!validatePassword(userData.password)) {
         newErrors.password = 'הסיסמה חייבת להכיל 7-12 תווים, עם מספר, אות גדולה ותו מיוחד!';
       }
-      if (!validateConfirmPassword(formData.password, formData.confirmPassword)) {
+      if (!validateConfirmPassword(userData.password, userData.confirmPassword)) {
         newErrors.confirmPassword = 'אימות הסיסמה לא תואם!';
       }
-      if (!validateImage(formData.image)) {
+      if (!validateImage(userData.image)) {
         newErrors.image = 'נא להעלות קובץ תמונה בפורמט JPG או JPEG בלבד!';
       }
-      if (!validateFirstName(formData.firstName)) {
+      if (!validateFirstName(userData.firstName)) {
         newErrors.firstName = 'ניתן למלא טקסט בלבד!';
       }
-      if (!validateLastName(formData.lastName)) {
+      if (!validateLastName(userData.lastName)) {
         newErrors.lastName = 'ניתן למלא טקסט בלבד!';
       }
-      if (!validatBirthDate(formData.birthDate)) {
+      if (!validatBirthDate(userData.birthDate)) {
         newErrors.birthDate = 'תאריך לא תקין גילך צריך להיות בין 18 ל120!'
       }
-      if (!validateStreet(formData.street)) {
+      if (!validateStreet(userData.street)) {
         newErrors.street = 'שם רחוב חייב להכיל אותיות בעברית בלבד!';
       }
-      if (!validateHouseNumber(formData.houseNumber)) {
+      if (!validateHouseNumber(userData.houseNumber)) {
         newErrors.houseNumber = 'מספר בית חייב להיות מספר חיובי!';
       }
   
       setErrors(newErrors);
   
       if (Object.keys(newErrors).length === 0) {
-        editUser(formData)
        
     };
     }
@@ -121,7 +107,7 @@ export default function EditDetails(props) {
     // Handle input changes
     const handleChange = (e) => {
       const { name, value, files } = e.target;
-      setFormData((prevData) => ({
+      setUserData((prevData) => ({
         ...prevData,
         [name]: files ? files[0] : value,
       }));
@@ -132,41 +118,41 @@ export default function EditDetails(props) {
       <div style={styles.container}>
         <form onSubmit={handleSubmit} style={styles.form}>
           <h2 style={styles.heading}>טופס עריכה</h2>
-          <p><strong>222222</strong></p>
+          <p><strong>{userData.email}</strong></p>
           <div style={styles.inputGroup}>
             <label>שם משתמש</label>
-            <input type="text" name="username" onChange={handleChange} />
+            <input type="text" name="username" onChange={handleChange}  value={userData.username}/>
             {errors.username && <div style={{ color: 'red' }}>{errors.username}</div>}
           </div>
           <div style={styles.inputGroup}>
             <label>סיסמה</label>
-            <input type="password" name="password" onChange={handleChange} />
+            <input type="text" name="password" onChange={handleChange}  value={userData.password} />
             {errors.password && <div style={{ color: 'red' }}>{errors.password}</div>}
           </div>
           <div style={styles.inputGroup}>
             <label>אימות סיסמה</label>
-            <input type="password" name="confirmPassword" onChange={handleChange} />
+            <input type="password" name="confirmPassword" onChange={handleChange} value={userData.confirmPassword} />
             {errors.confirmPassword && <div style={{ color: 'red' }}>{errors.confirmPassword}</div>}
           </div>
           <div style={styles.inputGroup}>
             <label>תמונה</label>
+            <img src={props.userImage}/>
             <input type="file" name="image" onChange={handleChange} />
             {errors.image && <div style={{ color: 'red' }}>{errors.image}</div>}
           </div>
           <div style={styles.inputGroup}>
             <label>שם פרטי</label>
-            <label>שם משתמש</label>
-            <input type="text" name="firstName" onChange={handleChange} />
+            <input type="text" name="firstName" onChange={handleChange} value={userData.firstName} />
             {errors.firstName && <div style={{ color: 'red' }}>{errors.firstName}</div>}
           </div>
           <div style={styles.inputGroup}>
             <label>שם משפחה</label>
-            <input type="text" name="lastName" onChange={handleChange} />
+            <input type="text" name="lastName" onChange={handleChange} value={userData.lastName}/>
             {errors.lastName && <div style={{ color: 'red' }}>{errors.lastName}</div>}
           </div>
           <div style={styles.inputGroup}>
             <label>תאריך לידה</label>
-            <input type="date" name="birthDate" onChange={handleChange} />
+            <input type="date" name="birthDate" onChange={handleChange} value={userData.birthDate} />
             {errors.birthDate && <div style={{ color: 'red' }}>{errors.birthDate}</div>}
           </div>
           <div style={styles.inputGroup}>

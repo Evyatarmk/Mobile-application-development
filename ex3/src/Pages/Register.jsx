@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { saveFileToDB } from '../indexedDB/saveFileToDB ';
 
 export default function Register(props) {
   const [formData, setFormData] = useState({
@@ -70,7 +71,18 @@ export default function Register(props) {
     return !isNaN(number) && Number(number) > 0;
   };
 
-  const registerUser=(user)=>{
+  const registerUser=(formData)=>{
+    const user={
+      username: formData.username ,
+      password: formData.password,
+      firstName:formData.firstName ,
+      lastName:formData.lastName ,
+      email:formData.email,
+      birthDate: formData.birthDate,
+      city: formData.city,
+      street: formData.street,
+      houseNumber: formData.houseNumber,
+    }
     const UsersList = localStorage.getItem("UsersList");
      // Initialize UsersList if it doesn't exist
      let users = UsersList ? JSON.parse(UsersList) : [];
@@ -87,6 +99,8 @@ export default function Register(props) {
      else {
        users.push(user);
        localStorage.setItem("UsersList", JSON.stringify(users));
+       sessionStorage.setItem("User", JSON.stringify(user));
+       saveFileToDB(formData.image,user.email)
        navigate('/Profile');
 
      }

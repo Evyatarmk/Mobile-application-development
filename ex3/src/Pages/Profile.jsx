@@ -1,24 +1,47 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import EditDetails from './EditDetails'
+import { getFileFromDB } from '../indexedDB/getFileFromDB'
 
 export default function Profile(props) {
-    const [user, setUser] = useState(JSON.parse(sessionStorage.getItem("User")))
+  
+    const [userImage, setUserImage] = useState(null);
+    const [user, setUser] = useState({})
     const [EditDetailsMode, setEditDetailsMode] = useState(false)
   
-  const setEditDetails=()=>{
+  const OpenEditDetails=()=>{
     setEditDetailsMode(true)
   }
   const logoutUser=()=>{
     setUser(null)
     sessionStorage.removeItem("User")
   }
+  const UpdateUserEditDetails=(user)=>{
+    setEditDetailsMode(false)
+    sessionStorage.setItem("User",JSON.stringify(user))
+    setUser(user)
+  }
+
+    useEffect(() => {
+        const fetchUser = async () => {
+      const userFromSessionStorage = JSON.parse(
+        sessionStorage.getItem("User")
+      );
+      if (userFromSessionStorage) {
+        const Image = await getFileFromDB(userFromSessionStorage.email);
+        setUser(userFromSessionStorage);
+        const blobUrl = URL.createObjectURL(Image.content);
+        setUserImage(blobUrl);
+      }
+    };
+    fetchUser();
+    },[]);
   
   return (
     <>
     {user ? 
     (
       <div style={style.container}>
-        <img src={user.image || "https://via.placeholder.com/100"} alt="Profile" style={style.image} />
+        <img src={userImage || "https://via.placeholder.com/100"} alt="Profile" style={style.image} />
         <div style={style.details}>
           <h2 style={style.heading}>פרופיל</h2>
           <h3 style={style.name}>{user.firstName} {user.lastName}</h3>
@@ -26,7 +49,7 @@ export default function Profile(props) {
           <p style={style.info}><strong>תאריך לידה:</strong> {user.birthDate}</p>
           <p style={style.info}><strong> מקום מגורים:</strong> {user.street} {user.houseNumber}, {user.city}</p>
           <div style={style.buttons}>
-            <input type="button" style={style.buttonEdit} value="עדכון פרטים" onClick={setEditDetails} />
+            <input type="button" style={style.buttonEdit} value="עדכון פרטים" onClick={OpenEditDetails} />
             <a href="https://games.yo-yoo.co.il/games_play.php?game=151">
               <input type="button" style={style.buttonGame} value="למשחק" />
             </a>
@@ -40,7 +63,7 @@ export default function Profile(props) {
         <div style={style.noLogin}>לא ביצעת כינסה למערכת</div>
       </div>
     )}
-    {EditDetailsMode ? <EditDetails  /> : null}
+    {EditDetailsMode ? <EditDetails sendToPUserDetails={UpdateUserEditDetails} user={user} userImage={userImage} /> : null}
 
   </>
   );
