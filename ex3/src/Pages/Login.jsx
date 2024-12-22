@@ -1,4 +1,6 @@
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom';
+
 
 export default function Login(props) {
    const [formData, setFormData] = useState({
@@ -6,7 +8,9 @@ export default function Login(props) {
       password: '',
 
     });
-  
+    const navigate = useNavigate();
+
+
     const [errors, setErrors] = useState({});
   
     // Validation functions
@@ -48,6 +52,8 @@ export default function Login(props) {
          const user=users.find(u => u.username === userToCheck.username && u.password === userToCheck.password)
          if (user) {
           sessionStorage.setItem("User",JSON.stringify(user))
+          navigate('/Profile');
+
         }
         else{
           alert("user dont exists");

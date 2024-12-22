@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export default function Register(props) {
   const [formData, setFormData] = useState({
@@ -14,6 +15,7 @@ export default function Register(props) {
     street: '',
     houseNumber: '',
   });
+  const navigate = useNavigate();
 
   const [errors, setErrors] = useState({});
 
@@ -85,7 +87,8 @@ export default function Register(props) {
      else {
        users.push(user);
        localStorage.setItem("UsersList", JSON.stringify(users));
-       alert("אתה נרשמת בהצלחה");
+       navigate('/Profile');
+
      }
    }
   // Validate the form on submit
