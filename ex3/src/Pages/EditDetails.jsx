@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
-import { saveFileToDB } from '../indexedDB/saveFileToDB ';
+import convertImageToBase64 from './convertImageToBase64';
 
 export default function EditDetails(props) {
-   const [userData, setUserData] = useState({...props.user,image:props.userImage});
+   const [userData, setUserData] = useState(props.user);
    const [errors, setErrors] = useState({});
-   const [isUserImageChange, setIsUserImageChange] = useState(false);
+   const [imageIsEdit, setImageIsEdit] = useState(false)
   
     // Validation functions
     const validateUsername = (username) => {
@@ -22,7 +22,7 @@ export default function EditDetails(props) {
     };
   
     const validateImage = (file) => {
-      return (!isUserImageChange || file && (file.type === 'image/jpeg' || file.type === 'image/jpg'));
+      return ( !imageIsEdit || (file.type === 'image/jpeg' || file.type === 'image/jpg'));
     };
     const validateFirstName = (firstName) => {
       const regex = /^[a-zA-Z\u0590-\u05FF\s]+$/;
@@ -53,8 +53,17 @@ export default function EditDetails(props) {
       return !isNaN(number) && Number(number) > 0;
     };
   
-    const editUser=(user)=>{
-
+    const editUser= async (userData)=>{
+      let base64String ;
+          if(imageIsEdit){
+            base64String = await convertImageToBase64(userData.image);
+          }
+          else{
+            base64String=userData.image;
+          }
+          const user={...userData,
+            image:base64String, 
+          }
       let UsersList = JSON.parse(localStorage.getItem("UsersList"));
        if (UsersList.some(u => u.username === user.username && u.email!=user.email)) {
          alert("השם משתמש הזה כבר תפוס אנא בחר אחר");
@@ -62,11 +71,7 @@ export default function EditDetails(props) {
        else{
         UsersList[UsersList.indexOf(u=>u.email===user.email)]=user
         localStorage.setItem("UsersList",JSON.stringify(UsersList))
-        sessionStorage.setItem("User", JSON.stringify(user));
-        if(isUserImageChange){
-          saveFileToDB(userData.image,userData.email)
-        }
-        props.sendToPUserDetails(userData)
+        props.sendToPUserDetails(user)
         alert("המשתממש נערך");
        } 
      }
@@ -115,7 +120,7 @@ export default function EditDetails(props) {
         ...prevData,
         [name]: files ? files[0] : value,
       }));
-      setIsUserImageChange(files ? true : false)
+      files?setImageIsEdit(true):setImageIsEdit(false)
     };
   
   

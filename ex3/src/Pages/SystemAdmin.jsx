@@ -1,10 +1,16 @@
 import React, { useEffect, useState } from 'react'
+import EditDetails from './EditDetails'
 
 export default function SystemAdmin(props) {
   const[UsersList,setUsersList]=useState([])
-  const EditDetails = (username) => {
-    console.log("Edit details for:", username);
-  };
+  const [editUser, setEditUser] = useState(null)
+  
+  const UpdateUserEditDetails=(user)=>{
+   let newUsersList= UsersList.filter(u=>{u.email!=user.email})
+   newUsersList.push(user)
+   setUsersList(newUsersList)
+   setEditUser(null)
+  }
   useEffect(() => {
     const storedUsers = JSON.parse(localStorage.getItem("UsersList") || "[]");
     setUsersList(storedUsers);
@@ -45,9 +51,10 @@ export default function SystemAdmin(props) {
               <td style={style.td}>{`${user.street} ${user.houseNumber}, ${user.city}`}</td>
               <td style={style.td}>{user.email}</td>
               <td style={style.td}>
-                <button
+                <button name={user.email}
                   style={style.buttonEdit}
-                  onClick={() => EditDetails(user.username)}
+                  onClick={() => setEditUser(user)
+                  }
                 >
                   עדכון פרטים
                 </button>
@@ -62,6 +69,7 @@ export default function SystemAdmin(props) {
           ))}
         </tbody>
       </table>
+      {editUser?<EditDetails sendToPUserDetails={UpdateUserEditDetails} user={editUser}/>:null}
     </div>
   );
 }

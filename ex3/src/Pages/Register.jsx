@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { saveFileToDB } from '../indexedDB/saveFileToDB ';
+import convertImageToBase64 from './convertImageToBase64';
 
 export default function Register(props) {
+  const navigate = useNavigate();
+  const [errors, setErrors] = useState({});
   const [formData, setFormData] = useState({
     username: '',
     password: '',
     confirmPassword: '',
-    image: null,
+    image: '',
     firstName: '',
     lastName: '',
     email: '',
@@ -16,9 +18,7 @@ export default function Register(props) {
     street: '',
     houseNumber: '',
   });
-  const navigate = useNavigate();
 
-  const [errors, setErrors] = useState({});
 
   // Validation functions
   const validateUsername = (username) => {
@@ -36,7 +36,7 @@ export default function Register(props) {
   };
 
   const validateImage = (file) => {
-    return file && (file.type === 'image/jpeg' || file.type === 'image/jpg');
+    return file=='' || (file.type === 'image/jpeg' || file.type === 'image/jpg');
   };
   const validateFirstName = (firstName) => {
     const regex = /^[a-zA-Z\u0590-\u05FF\s]+$/;
@@ -71,40 +71,7 @@ export default function Register(props) {
     return !isNaN(number) && Number(number) > 0;
   };
 
-  const registerUser=(formData)=>{
-    const user={
-      username: formData.username ,
-      password: formData.password,
-      firstName:formData.firstName ,
-      lastName:formData.lastName ,
-      email:formData.email,
-      birthDate: formData.birthDate,
-      city: formData.city,
-      street: formData.street,
-      houseNumber: formData.houseNumber,
-    }
-    const UsersList = localStorage.getItem("UsersList");
-     // Initialize UsersList if it doesn't exist
-     let users = UsersList ? JSON.parse(UsersList) : [];
-    
-     // Check if email already exists
-     if (users.some(u => u.email === user.email)) {
-       alert("יש לך כבר משתמש רשום");
-     }
-     // Check if username already exists
-     else if (users.some(u => u.username === user.username)) {
-       alert("השם משתמש הזה כבר תפוס אנא בחר אחר");
-     } 
-     // Add new user to the list and save to localStorage
-     else {
-       users.push(user);
-       localStorage.setItem("UsersList", JSON.stringify(users));
-       sessionStorage.setItem("User", JSON.stringify(user));
-       saveFileToDB(formData.image,user.email)
-       navigate('/Profile');
-
-     }
-   }
+  
   // Validate the form on submit
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -145,11 +112,52 @@ export default function Register(props) {
 
     if (Object.keys(newErrors).length === 0) {
       registerUser(formData)
-     
   };
   }
  
+  const registerUser= async (formData)=>{
+    let base64String ;
+    if(formData.image!=''){
+      base64String = await convertImageToBase64(formData.image);
+    }
+    else{
+      base64String=formData.image;
+    }
+    const user={
+      username: formData.username ,
+      password: formData.password,
+      image:base64String,
+      firstName:formData.firstName ,
+      lastName:formData.lastName ,
+      email:formData.email,
+      birthDate: formData.birthDate,
+      city: formData.city,
+      street: formData.street,
+      houseNumber: formData.houseNumber,
+      isAdmin:true,
+    }
+    const UsersList = localStorage.getItem("UsersList");
+     // Initialize UsersList if it doesn't exist
+     let users = UsersList ? JSON.parse(UsersList) : [];
+    
+     // Check if email already exists
+     if (users.some(u => u.email === user.email)) {
+       alert("יש לך כבר משתמש רשום");
+     }
+     // Check if username already exists
+     else if (users.some(u => u.username === user.username)) {
+       alert("השם משתמש הזה כבר תפוס אנא בחר אחר");
+     } 
+     // Add new user to the list and save to localStorage
+     else {
+       users.push(user);
+       localStorage.setItem("UsersList", JSON.stringify(users));
+       sessionStorage.setItem("User", JSON.stringify(user));
+       navigate('/Profile');
+     }
+   }
 
+  
   // Handle input changes
   const handleChange = (e) => {
     const { name, value, files } = e.target;

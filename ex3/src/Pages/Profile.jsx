@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import EditDetails from './EditDetails'
-import { getFileFromDB } from '../indexedDB/getFileFromDB'
+import SystemAdmin from './SystemAdmin'
 
 export default function Profile(props) {
-    
-    const [userImage, setUserImage] = useState(null);
     const [user, setUser] = useState({})
     const [EditDetailsMode, setEditDetailsMode] = useState(false)
   
@@ -18,59 +16,82 @@ export default function Profile(props) {
   }
   const UpdateUserEditDetails=(user)=>{
     setEditDetailsMode(false)
-    setUserImage(user.image);
     sessionStorage.setItem("User",JSON.stringify(user))
     setUser(user)
   }
 
     useEffect(() => {
-        const fetchUser = async () => {
       const userFromSessionStorage = JSON.parse(
         sessionStorage.getItem("User")
       );
-      if (userFromSessionStorage) {
-        const Image = await getFileFromDB(userFromSessionStorage.email);
         setUser(userFromSessionStorage);
-        const blobUrl = URL.createObjectURL(Image.content);
-        setUserImage(blobUrl);
-      }
-    };
-    fetchUser();
     },[]);
   
-  return (
-    <div>
-    {user ? 
-    (
-      <div style={style.container}>
-        <img src={userImage || "https://via.placeholder.com/100"} alt="Profile" style={style.image} />
-        <div style={style.details}>
-          <h2 style={style.heading}>פרופיל</h2>
-          <h3 style={style.name}>{user.username}</h3>
-          <p style={style.info}><strong>שם:</strong>{user.firstName} {user.lastName}</p>
-          <p style={style.info}><strong>אימייל:</strong> {user.email}</p>
-          <p style={style.info}><strong>תאריך לידה:</strong> {user.birthDate}</p>
-          <p style={style.info}><strong> מקום מגורים:</strong> {user.street} {user.houseNumber}, {user.city}</p>
-          <div style={style.buttons}>
-            <input type="button" style={style.buttonEdit} value="עדכון פרטים" onClick={OpenEditDetails} />
-            <a href="https://games.yo-yoo.co.il/games_play.php?game=151">
-              <input type="button" style={style.buttonGame} value="למשחק" />
-            </a>
-            <input type="button" style={style.buttonLogout} value="התנתק" onClick={logoutUser} />
-          </div>
-        </div>
-      </div>
-    ) : (
+    return (
       <div>
-        <h2 style={style.heading}>פרופיל</h2>
-        <div style={style.noLogin}>לא ביצעת כינסה למערכת</div>
+        {user?.isAdmin ? (
+          <SystemAdmin />
+        ) : (
+          <>
+            {user ? (
+              <div style={style.container}>
+                <img
+                  src={user.image || "https://via.placeholder.com/100"}
+                  alt="Profile"
+                  style={style.image}
+                />
+                <div style={style.details}>
+                  <h2 style={style.heading}>פרופיל</h2>
+                  <h3 style={style.name}>{user.username}</h3>
+                  <p style={style.info}>
+                    <strong>שם:</strong> {user.firstName} {user.lastName}
+                  </p>
+                  <p style={style.info}>
+                    <strong>אימייל:</strong> {user.email}
+                  </p>
+                  <p style={style.info}>
+                    <strong>תאריך לידה:</strong> {user.birthDate}
+                  </p>
+                  <p style={style.info}>
+                    <strong>מקום מגורים:</strong> {user.street} {user.houseNumber},{" "}
+                    {user.city}
+                  </p>
+                  <div style={style.buttons}>
+                    <input
+                      type="button"
+                      style={style.buttonEdit}
+                      value="עדכון פרטים"
+                      onClick={OpenEditDetails}
+                    />
+                    <a href="https://games.yo-yoo.co.il/games_play.php?game=151">
+                      <input
+                        type="button"
+                        style={style.buttonGame}
+                        value="למשחק"
+                      />
+                    </a>
+                    <input
+                      type="button"
+                      style={style.buttonLogout}
+                      value="התנתק"
+                      onClick={logoutUser}
+                    />
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div>
+                <h2 style={style.heading}>פרופיל</h2>
+                <div style={style.noLogin}>לא ביצעת כינסה למערכת</div>
+              </div>
+            )}
+            {EditDetailsMode && (
+              <EditDetails sendToPUserDetails={UpdateUserEditDetails} user={user} />
+            )}
+          </>
+        )}
       </div>
-    )}
-    {EditDetailsMode ? <EditDetails sendToPUserDetails={UpdateUserEditDetails} user={user} userImage={userImage} /> : null}
-
-  </div>
-  );
-  
+    );
 }
 
 const style = {

@@ -32,9 +32,9 @@ export default function Login(props) {
       if (!validateUsername(formData.username)) {
         newErrors.username = 'שם משתמש לא תקין!';
       }
-      if (!validatePassword(formData.password)) {
-        newErrors.password = 'הסיסמה חייבת להכיל 7-12 תווים, עם מספר, אות גדולה ותו מיוחד!';
-      }
+      // if (!validatePassword(formData.password)) {
+      //   newErrors.password = 'הסיסמה חייבת להכיל 7-12 תווים, עם מספר, אות גדולה ותו מיוחד!';
+      // }
      
       setErrors(newErrors);
   
@@ -53,7 +53,6 @@ export default function Login(props) {
          if (user) {
           sessionStorage.setItem("User",JSON.stringify(user))
           navigate('/Profile');
-
         }
         else{
           alert("user dont exists");
