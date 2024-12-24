@@ -134,7 +134,7 @@ export default function Register(props) {
       city: formData.city,
       street: formData.street,
       houseNumber: formData.houseNumber,
-      isAdmin:true,
+      isAdmin:false,
     }
     const UsersList = localStorage.getItem("UsersList");
      // Initialize UsersList if it doesn't exist

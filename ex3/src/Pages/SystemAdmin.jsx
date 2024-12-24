@@ -6,9 +6,13 @@ export default function SystemAdmin(props) {
   const [editUser, setEditUser] = useState(null)
   
   const UpdateUserEditDetails=(user)=>{
-   let newUsersList= UsersList.filter(u=>{u.email!=user.email})
-   newUsersList.push(user)
-   setUsersList(newUsersList)
+  const userIndex = UsersList.findIndex((u) => u.email === user.email);
+  // If the user is found, update the list
+  if (userIndex !== -1) {
+    let newUsersList = [...UsersList]; // Create a copy to avoid mutating state directly
+    newUsersList[userIndex] = user;
+    setUsersList(newUsersList); // Update the state with the modified list
+  }
    setEditUser(null)
   }
   useEffect(() => {
@@ -134,7 +138,7 @@ const style = {
     borderRadius: "5px",
     cursor: "pointer",
     transition: "background-color 0.3s ease",
-    marginRight: "5px",
+    margin: "5px",
   },
   buttonEditHover: {
     backgroundColor: "#0056b3",
