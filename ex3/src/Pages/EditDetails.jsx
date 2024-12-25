@@ -64,12 +64,12 @@ export default function EditDetails(props) {
           const user={...userData,
             image:base64String, 
           }
-      let UsersList = JSON.parse(localStorage.getItem("UsersList"));
-       if (UsersList.some(u => u.username === user.username && u.email!=user.email)) {
-         alert("השם משתמש הזה כבר תפוס אנא בחר אחר");
-       }
-       else{
-        UsersList[UsersList.indexOf(u=>u.email===user.email)]=user
+          let UsersList = JSON.parse(localStorage.getItem("UsersList"));
+          if (UsersList.some(u => u.username === user.username && u.email!=user.email)) {
+            alert("השם משתמש הזה כבר תפוס אנא בחר אחר");
+          }
+          else{
+        UsersList[UsersList.findIndex(u=>u.email===user.email)]=user
         localStorage.setItem("UsersList",JSON.stringify(UsersList))
         props.sendToPUserDetails(user)
         alert("המשתממש נערך");
@@ -127,6 +127,7 @@ export default function EditDetails(props) {
     return (
       <div style={styles.container}>
         <form onSubmit={handleSubmit} style={styles.form}>
+        <input type="button" style={styles.exitBTN} className='btn-close' onClick={()=>props.closeEditMode()} />
           <h2 style={styles.heading}>טופס עריכה</h2>
           <p><strong>{userData.email}</strong></p>
           <div style={styles.inputGroup}>
@@ -189,23 +190,27 @@ export default function EditDetails(props) {
   // Inline CSS for styling
   const styles = {
     container: {
+      marginTop:'20px',
       display: 'flex',
+      flexDirection:'column',
       justifyContent: 'center',
       alignItems: 'center',
       minHeight: '100vh',
-      backgroundColor: '#f7f7f7',
       padding: '20px',
-      borderRadius: '20px',
-      border:' #4CAF50 solid '
-     
+      borderRadius: '20px',     
+    },
+    exitBTN: {
+      position: "absolute",
+      top: "10px", // Distance from the top
+      right: "10px", // Distance from the right
     },
     form: {
+      position: 'relative', 
       width: '100%',
       maxWidth: '500px',
-      backgroundColor: '#fff',
       padding: '20px',
       borderRadius: '10px',
-      boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+      boxShadow: '9px 9px 9px rgba(0, 0, 0, 0.1)',
       fontFamily: 'Arial, sans-serif',
     },
     heading: {

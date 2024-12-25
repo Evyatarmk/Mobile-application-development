@@ -9,6 +9,9 @@ export default function Profile(props) {
   const OpenEditDetails=()=>{
     setEditDetailsMode(true)
   }
+  const CloseEditDetails=()=>{
+    setEditDetailsMode(false)
+  }
   const logoutUser=()=>{
     setUser(null)
     setEditDetailsMode(false)
@@ -26,69 +29,67 @@ export default function Profile(props) {
       );
         setUser(userFromSessionStorage);
     },[]);
-  
     return (
-      <div>
+      <div style={style.container}>
         {user?.isAdmin ? (
           <SystemAdmin />
-        ) : (
-          <>
-            {user ? (
-              <div style={style.container}>
-                <img
-                  src={user.image || "https://via.placeholder.com/100"}
-                  alt="Profile"
-                  style={style.image}
+        ) : EditDetailsMode ? (
+          <EditDetails
+            sendToPUserDetails={UpdateUserEditDetails}
+            user={user}
+            closeEditMode={CloseEditDetails}
+          />
+        ) : user ? (
+          <div style={style.container}>
+            <img
+              src={user.image || "https://via.placeholder.com/100"}
+              alt="Profile"
+              style={style.image}
+            />
+            <div style={style.details}>
+              <h2 style={style.heading}>פרופיל</h2>
+              <h3 style={style.name}>{user.username}</h3>
+              <p style={style.info}>
+                <strong>שם:</strong> {user.firstName} {user.lastName}
+              </p>
+              <p style={style.info}>
+                <strong>אימייל:</strong> {user.email}
+              </p>
+              <p style={style.info}>
+                <strong>תאריך לידה:</strong> {user.birthDate}
+              </p>
+              <p style={style.info}>
+                <strong>מקום מגורים:</strong> {user.street} {user.houseNumber},{" "}
+                {user.city}
+              </p>
+              <div style={style.buttons}>
+                <input
+                  type="button"
+                  style={style.buttonEdit}
+                  value="עדכון פרטים"
+                  onClick={OpenEditDetails}
                 />
-                <div style={style.details}>
-                  <h2 style={style.heading}>פרופיל</h2>
-                  <h3 style={style.name}>{user.username}</h3>
-                  <p style={style.info}>
-                    <strong>שם:</strong> {user.firstName} {user.lastName}
-                  </p>
-                  <p style={style.info}>
-                    <strong>אימייל:</strong> {user.email}
-                  </p>
-                  <p style={style.info}>
-                    <strong>תאריך לידה:</strong> {user.birthDate}
-                  </p>
-                  <p style={style.info}>
-                    <strong>מקום מגורים:</strong> {user.street} {user.houseNumber},{" "}
-                    {user.city}
-                  </p>
-                  <div style={style.buttons}>
-                    <input
-                      type="button"
-                      style={style.buttonEdit}
-                      value="עדכון פרטים"
-                      onClick={OpenEditDetails}
-                    />
-                    <a href="https://games.yo-yoo.co.il/games_play.php?game=151">
-                      <input
-                        type="button"
-                        style={style.buttonGame}
-                        value="למשחק"
-                      />
-                    </a>
-                    <input
-                      type="button"
-                      style={style.buttonLogout}
-                      value="התנתק"
-                      onClick={logoutUser}
-                    />
-                  </div>
-                </div>
+                <a href="https://games.yo-yoo.co.il/games_play.php?game=151">
+                  <input
+                    type="button"
+                    style={style.buttonGame}
+                    value="למשחק"
+                  />
+                </a>
+                <input
+                  type="button"
+                  style={style.buttonLogout}
+                  value="התנתק"
+                  onClick={logoutUser}
+                />
               </div>
-            ) : (
-              <div>
-                <h2 style={style.heading}>פרופיל</h2>
-                <div style={style.noLogin}>לא ביצעת כינסה למערכת</div>
-              </div>
-            )}
-            {EditDetailsMode && (
-              <EditDetails sendToPUserDetails={UpdateUserEditDetails} user={user} />
-            )}
-          </>
+            </div>
+          </div>
+        ) : (
+          <div>
+            <h2 style={style.heading}>פרופיל</h2>
+            <div style={style.noLogin}>לא ביצעת כינסה למערכת</div>
+          </div>
         )}
       </div>
     );
@@ -99,13 +100,14 @@ const style = {
       display: "flex",
       alignItems: "start",
       justifyContent: "start",
-      backgroundColor: "#f9f9f9",
       padding: "20px",
       borderRadius: "8px",
-      boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
       maxWidth: "600px",
       margin: "20px auto",
       gap: "20px",
+      backgroundColor: '#E3F2FD',
+      boxShadow: '9px 9px 20px rgba(0, 0, 0, 0.1)',
+
     },
     image: {
       width: "100px",

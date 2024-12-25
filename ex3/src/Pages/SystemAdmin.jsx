@@ -15,6 +15,9 @@ export default function SystemAdmin(props) {
   }
    setEditUser(null)
   }
+  const CloseEditDetails=()=>{
+     setEditUser(null)
+    }
   useEffect(() => {
     const storedUsers = JSON.parse(localStorage.getItem("UsersList") || "[]");
     setUsersList(storedUsers);
@@ -24,68 +27,72 @@ export default function SystemAdmin(props) {
     localStorage.setItem("UsersList", JSON.stringify(updatedUsersList));
     setUsersList(updatedUsersList)
   };
-
+  
   return (
-    <div style={style.tableContainer}>
-      <h2 style={style.heading}>ניהול משתמשים</h2>
-      <table style={style.table}>
-        <thead>
-          <tr>
-            <th style={style.th}>שם משתמש</th>
-            <th style={style.th}>שם מלא</th>
-            <th style={style.th}>תאריך לידה</th>
-            <th style={style.th}>כתובת</th>
-            <th style={style.th}>דואר אלקטרוני</th>
-            <th style={style.th}>פעולות</th>
-          </tr>
-        </thead>
-        <tbody>
-          {UsersList.map(user => (
-            <tr key={user.username} style={style.tr}>
-              <td style={style.td}>
-                <img
-                  src={user.image || "https://via.placeholder.com/50"}
-                  alt="Profile"
-                  style={style.image}
-                />
-                <div>{user.username}</div>
-              </td>
-              <td style={style.td}>{`${user.firstName} ${user.lastName}`}</td>
-              <td style={style.td}>{user.birthDate}</td>
-              <td style={style.td}>{`${user.street} ${user.houseNumber}, ${user.city}`}</td>
-              <td style={style.td}>{user.email}</td>
-              <td style={style.td}>
-                <button name={user.email}
-                  style={style.buttonEdit}
-                  onClick={() => setEditUser(user)
-                  }
-                >
-                  עדכון פרטים
-                </button>
-                <button
-                  style={style.buttonDelete}
-                  onClick={() => DeleteUser(user.username)}
-                >
-                  מחיקה
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      {editUser?<EditDetails sendToPUserDetails={UpdateUserEditDetails} user={editUser}/>:null}
+    <div>
+      {editUser ? (
+        <EditDetails sendToPUserDetails={UpdateUserEditDetails} user={editUser} closeEditMode={CloseEditDetails}/>
+      ) : (
+        <div style={style.tableContainer}>
+          <h2 style={style.heading}>ניהול משתמשים</h2>
+          <table style={style.table}>
+            <thead>
+              <tr>
+                <th style={style.th}>שם משתמש</th>
+                <th style={style.th}>שם מלא</th>
+                <th style={style.th}>תאריך לידה</th>
+                <th style={style.th}>כתובת</th>
+                <th style={style.th}>דואר אלקטרוני</th>
+                <th style={style.th}>פעולות</th>
+              </tr>
+            </thead>
+            <tbody>
+              {UsersList.map((user) => (
+                <tr key={user.username} style={style.tr}>
+                  <td style={style.td}>
+                    <img
+                      src={user.image || "https://via.placeholder.com/50"}
+                      alt="Profile"
+                      style={style.image}
+                    />
+                    <div>{user.username}</div>
+                  </td>
+                  <td style={style.td}>{`${user.firstName} ${user.lastName}`}</td>
+                  <td style={style.td}>{user.birthDate}</td>
+                  <td style={style.td}>{`${user.street} ${user.houseNumber}, ${user.city}`}</td>
+                  <td style={style.td}>{user.email}</td>
+                  <td style={style.td}>
+                    <button
+                      name={user.email}
+                      style={style.buttonEdit}
+                      onClick={() => setEditUser(user)}
+                    >
+                      עדכון פרטים
+                    </button>
+                    <button
+                      style={style.buttonDelete}
+                      onClick={() => DeleteUser(user.username)}
+                    >
+                      מחיקה
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
+  
 }
 
 const style = {
   tableContainer: {
     maxWidth: "1000px",
     margin: "30px auto",
-    backgroundColor: "#ffffff",
-    padding: "20px",
+       padding: "20px",
     borderRadius: "12px",
-    boxShadow: "0 8px 15px rgba(0, 0, 0, 0.1)",
     textAlign: "right",
     fontFamily: "'Arial', sans-serif",
   },
@@ -100,6 +107,8 @@ const style = {
     width: "100%",
     borderCollapse: "collapse",
     marginTop: "20px",
+    boxShadow: '9px 9px 9px rgba(0, 0, 0, 0.1)',
+
   },
   th: {
     backgroundColor: "#4CAF50",

@@ -29,9 +29,9 @@ export default function Login(props) {
       e.preventDefault();
       const newErrors = {};
   
-      if (!validateUsername(formData.username)) {
-        newErrors.username = 'שם משתמש לא תקין!';
-      }
+      // if (!validateUsername(formData.username)) {
+      //   newErrors.username = 'שם משתמש לא תקין!';
+      // }
       // if (!validatePassword(formData.password)) {
       //   newErrors.password = 'הסיסמה חייבת להכיל 7-12 תווים, עם מספר, אות גדולה ותו מיוחד!';
       // }
@@ -50,6 +50,7 @@ export default function Login(props) {
       
         // Check if user exists
          const user=users.find(u => u.username === userToCheck.username && u.password === userToCheck.password)
+         console.log(UsersList)
          if (user) {
           sessionStorage.setItem("User",JSON.stringify(user))
           navigate('/Profile');
@@ -96,16 +97,15 @@ const styles = {
     justifyContent: 'center',
     alignItems: 'center',
     minHeight: '100vh',
-    backgroundColor: '#f7f7f7',
     padding: '20px',
   },
   form: {
     width: '100%',
     maxWidth: '500px',
-    backgroundColor: '#fff',
+    backgroundColor: '#E3F2FD',
     padding: '20px',
     borderRadius: '10px',
-    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+    boxShadow: '9px 9px 9px rgba(0, 0, 0, 0.1)',
     fontFamily: 'Arial, sans-serif',
   },
   heading: {
