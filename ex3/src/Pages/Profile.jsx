@@ -30,7 +30,7 @@ export default function Profile(props) {
         setUser(userFromSessionStorage);
     },[]);
     return (
-      <div style={style.container}>
+      <div>
         {user?.isAdmin ? (
           <SystemAdmin />
         ) : EditDetailsMode ? (
@@ -97,6 +97,8 @@ export default function Profile(props) {
 
 const style = {
     container: {
+      backgroundColor: '#E3F2FD',
+      boxShadow: '9px 9px 20px rgba(0, 0, 0, 0.1)',
       display: "flex",
       alignItems: "start",
       justifyContent: "start",
@@ -105,8 +107,7 @@ const style = {
       maxWidth: "600px",
       margin: "20px auto",
       gap: "20px",
-      backgroundColor: '#E3F2FD',
-      boxShadow: '9px 9px 20px rgba(0, 0, 0, 0.1)',
+    
 
     },
     image: {

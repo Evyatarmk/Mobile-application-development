@@ -89,9 +89,10 @@ export default function SystemAdmin(props) {
 
 const style = {
   tableContainer: {
+    
     maxWidth: "1000px",
     margin: "30px auto",
-       padding: "20px",
+    padding: "20px",
     borderRadius: "12px",
     textAlign: "right",
     fontFamily: "'Arial', sans-serif",
@@ -104,6 +105,8 @@ const style = {
     fontWeight: "bold",
   },
   table: {
+    backgroundColor: '#E3F2FD',
+    boxShadow: '9px 9px 20px rgba(0, 0, 0, 0.1)',
     width: "100%",
     borderCollapse: "collapse",
     marginTop: "20px",
@@ -111,7 +114,7 @@ const style = {
 
   },
   th: {
-    backgroundColor: "#4CAF50",
+    backgroundColor: "rgb(49, 102, 151)",
     color: "#fff",
     padding: "12px",
     textAlign: "center",

@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import convertImageToBase64 from './convertImageToBase64';
+import { usePopup } from './Popup';
 
 export default function Register(props) {
+  const { showPopup } = usePopup();
+
   const navigate = useNavigate();
   const [errors, setErrors] = useState({});
   const [formData, setFormData] = useState({
@@ -142,11 +145,11 @@ export default function Register(props) {
     
      // Check if email already exists
      if (users.some(u => u.email === user.email)) {
-       alert("יש לך כבר משתמש רשום");
+      showPopup("יש לך כבר משתמש רשום");
      }
      // Check if username already exists
      else if (users.some(u => u.username === user.username)) {
-       alert("השם משתמש הזה כבר תפוס אנא בחר אחר");
+      showPopup("השם משתמש הזה כבר תפוס אנא בחר אחר");
      } 
      // Add new user to the list and save to localStorage
      else {
@@ -194,7 +197,6 @@ export default function Register(props) {
         </div>
         <div style={styles.inputGroup}>
           <label>שם פרטי</label>
-          <label>שם משתמש</label>
           <input type="text" name="firstName" onChange={handleChange} />
           {errors.firstName && <div style={{ color: 'red' }}>{errors.firstName}</div>}
         </div>
@@ -203,6 +205,7 @@ export default function Register(props) {
           <input type="text" name="lastName" onChange={handleChange} />
           {errors.lastName && <div style={{ color: 'red' }}>{errors.lastName}</div>}
         </div>
+
         <div style={styles.inputGroup}>
           <label>כתובת מייל</label>
           <input type="email" name="email" onChange={handleChange} />
@@ -242,6 +245,7 @@ export default function Register(props) {
 // Inline CSS for styling
 const styles = {
   container: {
+    marginTop:'10px',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',

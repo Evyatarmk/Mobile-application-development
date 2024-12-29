@@ -1,10 +1,14 @@
 import React, { useState } from 'react'
 import convertImageToBase64 from './convertImageToBase64';
+import { usePopup } from './Popup';
+
 
 export default function EditDetails(props) {
    const [userData, setUserData] = useState(props.user);
    const [errors, setErrors] = useState({});
    const [imageIsEdit, setImageIsEdit] = useState(false)
+   const { showPopup } = usePopup();
+
   
     // Validation functions
     const validateUsername = (username) => {
@@ -66,13 +70,13 @@ export default function EditDetails(props) {
           }
           let UsersList = JSON.parse(localStorage.getItem("UsersList"));
           if (UsersList.some(u => u.username === user.username && u.email!=user.email)) {
-            alert("השם משתמש הזה כבר תפוס אנא בחר אחר");
+            showPopup("השם משתמש הזה כבר תפוס אנא בחר אחר");
           }
           else{
         UsersList[UsersList.findIndex(u=>u.email===user.email)]=user
         localStorage.setItem("UsersList",JSON.stringify(UsersList))
         props.sendToPUserDetails(user)
-        alert("המשתממש נערך");
+        showPopup("המשתממש נערך");
        } 
      }
     // Validate the form on submit
@@ -205,6 +209,8 @@ export default function EditDetails(props) {
       right: "10px", // Distance from the right
     },
     form: {
+      backgroundColor: '#E3F2FD',
+      boxShadow: '9px 9px 20px rgba(0, 0, 0, 0.1)',
       position: 'relative', 
       width: '100%',
       maxWidth: '500px',

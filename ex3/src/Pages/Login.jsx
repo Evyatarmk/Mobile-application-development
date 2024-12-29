@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
+import { usePopup } from './Popup';
 
 
 export default function Login(props) {
@@ -8,6 +9,8 @@ export default function Login(props) {
       password: '',
 
     });
+    const { showPopup } = usePopup();
+
     const navigate = useNavigate();
 
 
@@ -56,7 +59,7 @@ export default function Login(props) {
           navigate('/Profile');
         }
         else{
-          alert("user dont exists");
+          showPopup("המשתשמש לא קיים");
         } 
     }
   

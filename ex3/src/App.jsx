@@ -5,6 +5,7 @@ import Login from './Pages/Login'
 import Profile from './Pages/Profile'
 import SystemAdmin from './Pages/SystemAdmin'
 import { Link, Route, Routes } from 'react-router-dom'
+import userIcon from './icons/user.png';
 
 function App() {
   if (!localStorage.getItem("UsersList")) {
@@ -25,11 +26,14 @@ function App() {
   return (
     <>
 <div style={styles.navbar}>
-  <Link to="/Register" style={styles.link}>הרשמה</Link>
-  <span style={styles.separator}>|</span>
-  <Link to="/Login" style={styles.link}>התחברות</Link>
-  <span style={styles.separator}>|</span>
-  <Link to="/" style={styles.link}>אזור אישי</Link>
+  <Link to="/Register" style={styles.link}>
+  <input type="button"  className='btn btn-primary' value={'Signup'}/>
+  </Link>
+  <Link to="/Login" style={styles.link}>
+  <input type="button" className='btn btn-primary' value={'Login'}/>
+  </Link>
+  <Link to="/" style={styles.link}><img style={styles.imgUserIcon} src={userIcon}></img>
+  </Link>
 </div>
     <Routes>
       <Route path='/' element={<Profile/>}/>
@@ -50,15 +54,20 @@ const styles = {
     left: 0,
     width: '100%', // Spans the full width of the page
     display: 'flex',
-    justifyContent: 'center', // Centers the navbar items horizontally
+    justifyContent: 'start', // Centers the navbar items horizontally
     alignItems: 'center', // Aligns items vertically in the center
-    backgroundColor: '#4CAF50', // Green background color
+    backgroundColor: '#E3F2FD',
     padding: '10px 20px', // Adds some spacing around the navbar
-    borderBottom: '2px solid #388E3C', // Adds a bottom border for a visual effect
+    borderBottom: '2px solidrgb(20, 134, 211)', // Adds a bottom border for a visual effect
     fontFamily: 'Arial, sans-serif',
     fontSize: '16px',
     zIndex: 1000, // Ensures the navbar stays above other content
     boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)', // Adds a subtle shadow
+  },
+  imgUserIcon:{
+    width: '24px',
+    height: '24px',
+    transition: 'transform 0.2s ease',
   },
   link: {
     textDecoration: 'none', // Removes underline
