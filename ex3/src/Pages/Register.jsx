@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import convertImageToBase64 from './convertImageToBase64';
 import { usePopup } from './Popup';
+import '../css/cityList.css';
 
 export default function Register(props) {
   const { showPopup } = usePopup();
-
   const navigate = useNavigate();
   const [errors, setErrors] = useState({});
   const [formData, setFormData] = useState({
@@ -21,6 +21,31 @@ export default function Register(props) {
     street: '',
     houseNumber: '',
   });
+  const [allCities, setCities] = useState([]);
+  const [filteredCities, setFilteredCities] = useState([]);
+  // Fetch cities from an API on component mount
+  useEffect(() => {
+    const fetchCities = async () => {
+      try {
+        const response = await fetch(
+          'https://raw.githubusercontent.com/royts/israel-cities/master/israel-cities.json',
+          
+        );
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch cities');
+        }
+
+        const data = await response.json();
+        console.log(data)
+        const cityNames = data.map((city) => city.name);
+        setCities(cityNames);
+      } catch (error) {
+        console.error('Error fetching cities:', error);
+      }
+    };
+    fetchCities();
+  }, []);
 
 
   // Validation functions
@@ -39,7 +64,7 @@ export default function Register(props) {
   };
 
   const validateImage = (file) => {
-    return file=='' || (file.type === 'image/jpeg' || file.type === 'image/jpg');
+    return file == '' || (file.type === 'image/jpeg' || file.type === 'image/jpg');
   };
   const validateFirstName = (firstName) => {
     const regex = /^[a-zA-Z\u0590-\u05FF\s]+$/;
@@ -74,7 +99,7 @@ export default function Register(props) {
     return !isNaN(number) && Number(number) > 0;
   };
 
-  
+
   // Validate the form on submit
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -115,52 +140,55 @@ export default function Register(props) {
 
     if (Object.keys(newErrors).length === 0) {
       registerUser(formData)
-  };
+    };
   }
- 
-  const registerUser= async (formData)=>{
-    let base64String ;
-    if(formData.image!=''){
+
+  const registerUser = async (formData) => {
+    let base64String;
+    if (formData.image != '') {
       base64String = await convertImageToBase64(formData.image);
     }
-    else{
-      base64String=formData.image;
+    else {
+      base64String = formData.image;
     }
-    const user={
-      username: formData.username ,
+    const user = {
+      username: formData.username,
       password: formData.password,
-      image:base64String,
-      firstName:formData.firstName ,
-      lastName:formData.lastName ,
-      email:formData.email,
+      image: base64String,
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      email: formData.email,
       birthDate: formData.birthDate,
       city: formData.city,
       street: formData.street,
       houseNumber: formData.houseNumber,
-      isAdmin:false,
+      isAdmin: false,
     }
     const UsersList = localStorage.getItem("UsersList");
-     // Initialize UsersList if it doesn't exist
-     let users = UsersList ? JSON.parse(UsersList) : [];
-    
-     // Check if email already exists
-     if (users.some(u => u.email === user.email)) {
-      showPopup("יש לך כבר משתמש רשום");
-     }
-     // Check if username already exists
-     else if (users.some(u => u.username === user.username)) {
-      showPopup("השם משתמש הזה כבר תפוס אנא בחר אחר");
-     } 
-     // Add new user to the list and save to localStorage
-     else {
-       users.push(user);
-       localStorage.setItem("UsersList", JSON.stringify(users));
-       sessionStorage.setItem("User", JSON.stringify(user));
-       navigate('/Profile');
-     }
-   }
+    // Initialize UsersList if it doesn't exist
+    let users = UsersList ? JSON.parse(UsersList) : [];
 
-  
+    // Check if email already exists
+    if (users.some(u => u.email === user.email)) {
+      showPopup("יש לך כבר משתמש רשום");
+    }
+    // Check if username already exists
+    else if (users.some(u => u.username === user.username)) {
+      showPopup("השם משתמש הזה כבר תפוס אנא בחר אחר");
+    }
+    // Add new user to the list and save to localStorage
+    else {
+      users.push(user);
+      localStorage.setItem("UsersList", JSON.stringify(users));
+      sessionStorage.setItem("User", JSON.stringify(user));
+      navigate('/Profile');
+    }
+  }
+
+  const handleCityClick = (city) => {
+    setFormData((prev) => ({ ...prev, city })); // Update city in form
+    setFilteredCities([]); // Clear suggestions
+  };
   // Handle input changes
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -168,6 +196,13 @@ export default function Register(props) {
       ...prevData,
       [name]: files ? files[0] : value,
     }));
+    // Handle city autocomplete dynamically
+    if (name === 'city') {
+      const suggestions = allCities.filter((city) =>
+        city.toLowerCase().includes(value.toLowerCase())
+      );
+      setFilteredCities(suggestions);
+    }
   };
 
 
@@ -217,14 +252,30 @@ export default function Register(props) {
           {errors.birthDate && <div style={{ color: 'red' }}>{errors.birthDate}</div>}
         </div>
         <div style={styles.inputGroup}>
-          <label>עיר</label>
-          <select type="s" name="city" onChange={handleChange}>
-            <option value="תל אביב">תל אביב</option>
-            <option value="ירושלים">ירושלים</option>
-            <option value="חיפה">חיפה</option>
-            <option value="באר שבע">באר שבע</option>
-            <option value="אשדוד">אשדוד</option>
-          </select>
+          <label htmlFor="city">עיר</label>
+          {/* City Field with Autocomplete */}
+          <div className="form-group">
+            <input
+              type="text"
+              id="city"
+              name="city"
+              list="citys"
+              value={formData.city}
+              onChange={handleChange}
+              required
+            />
+            {/* Show suggestions */}
+            {filteredCities.length > 0 && (
+              <datalist  id="citys">
+                {filteredCities.map((city, index) => (
+                  <option  key={index}
+                   onClick={() => handleCityClick(city)}
+                   value= {city}>
+                  </option>
+                ))}
+              </datalist >
+            )}
+          </div>
         </div>
         <div style={styles.inputGroup}>
           <label>שם רחוב</label>
@@ -245,7 +296,7 @@ export default function Register(props) {
 // Inline CSS for styling
 const styles = {
   container: {
-    marginTop:'10px',
+    marginTop: '10px',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
@@ -253,7 +304,7 @@ const styles = {
     padding: '20px',
   },
   form: {
-    
+
     width: '100%',
     maxWidth: '500px',
     backgroundColor: '#E3F2FD',
@@ -281,7 +332,7 @@ const styles = {
     color: '#333',
   },
   input: {
-     width: '100%',
+    width: '100%',
     padding: '12px',
     borderRadius: '8px',
     border: '1px solid #ddd',

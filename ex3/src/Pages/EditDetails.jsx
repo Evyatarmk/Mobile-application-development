@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import convertImageToBase64 from './convertImageToBase64';
 import { usePopup } from './Popup';
 
@@ -8,8 +8,31 @@ export default function EditDetails(props) {
    const [errors, setErrors] = useState({});
    const [imageIsEdit, setImageIsEdit] = useState(false)
    const { showPopup } = usePopup();
-
+ const [allCities, setCities] = useState([]);
+  const [filteredCities, setFilteredCities] = useState([]);
+  // Fetch cities from an API on component mount
+    useEffect(() => {
+      const fetchCities = async () => {
+        try {
+          const response = await fetch(
+            'https://raw.githubusercontent.com/royts/israel-cities/master/israel-cities.json',
+            
+          );
   
+          if (!response.ok) {
+            throw new Error('Failed to fetch cities');
+          }
+  
+          const data = await response.json();
+          console.log(data)
+          const cityNames = data.map((city) => city.name);
+          setCities(cityNames);
+        } catch (error) {
+          console.error('Error fetching cities:', error);
+        }
+      };
+      fetchCities();
+    }, []);
     // Validation functions
     const validateUsername = (username) => {
       const regex = /^[a-zA-Z0-9!@#$%^&*]{1,60}$/;
@@ -47,6 +70,9 @@ export default function EditDetails(props) {
         return false;
       }
       return true;
+    };
+    const validateCity = (city) => {
+      return allCities.includes(city)
     };
     const validateStreet = (street) => {
       const regex = /^[\u0590-\u05FF\s]+$/;
@@ -106,6 +132,9 @@ export default function EditDetails(props) {
       if (!validateStreet(userData.street)) {
         newErrors.street = 'שם רחוב חייב להכיל אותיות בעברית בלבד!';
       }
+      if (!validateCity(userData.city)) {
+        newErrors.city = 'העיר צריכה להיות מהרשימה';
+      }
       if (!validateHouseNumber(userData.houseNumber)) {
         newErrors.houseNumber = 'מספר בית חייב להיות מספר חיובי!';
       }
@@ -125,6 +154,13 @@ export default function EditDetails(props) {
         [name]: files ? files[0] : value,
       }));
       files?setImageIsEdit(true):setImageIsEdit(false)
+       // Handle city autocomplete dynamically
+    if (name === 'city') {
+      const suggestions = allCities.filter((city) =>
+        city.toLowerCase().includes(value.toLowerCase())
+      );
+      setFilteredCities(suggestions);
+    }
     };
   
   
@@ -166,15 +202,32 @@ export default function EditDetails(props) {
             {errors.birthDate && <div style={{ color: 'red' }}>{errors.birthDate}</div>}
           </div>
           <div style={styles.inputGroup}>
-            <label>עיר</label>
-            <select type="s" name="city" onChange={handleChange} value={userData.city}>
-              <option value="תל אביב">תל אביב</option>
-              <option value="ירושלים">ירושלים</option>
-              <option value="חיפה">חיפה</option>
-              <option value="באר שבע">באר שבע</option>
-              <option value="אשדוד">אשדוד</option>
-            </select>
+          <label htmlFor="city">עיר</label>
+          {/* City Field with Autocomplete */}
+          <div className="form-group">
+            <input
+              type="text"
+              id="city"
+              name="city"
+              list="citys"
+              value={userData.city}
+              onChange={handleChange}
+              required
+            />
+            {/* Show suggestions */}
+            {filteredCities.length > 0 && (
+              <datalist  id="citys">
+                {filteredCities.map((city, index) => (
+                  <option  key={index}
+                   onClick={() => handleCityClick(city)}
+                   value= {city}>
+                  </option>
+                ))}
+              </datalist >
+            )}
           </div>
+          {errors.city && <div style={{ color: 'red' }}>{errors.city}</div>}
+        </div>
           <div style={styles.inputGroup}>
             <label>שם רחוב</label>
             <input type="text" name="street" onChange={handleChange} value={userData.street}/>
