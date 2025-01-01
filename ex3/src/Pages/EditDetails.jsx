@@ -133,7 +133,7 @@ export default function EditDetails(props) {
         newErrors.street = 'שם רחוב חייב להכיל אותיות בעברית בלבד!';
       }
       if (!validateCity(userData.city)) {
-        newErrors.city = 'העיר צריכה להיות מהרשימה';
+        newErrors.city = 'העיר צריכה להיות אמיתי וקיימת ברשימה';
       }
       if (!validateHouseNumber(userData.houseNumber)) {
         newErrors.houseNumber = 'מספר בית חייב להיות מספר חיובי!';
