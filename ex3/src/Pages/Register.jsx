@@ -90,6 +90,9 @@ export default function Register(props) {
     }
     return true;
   };
+  const validateCity = (city) => {
+    return allCities.includes(city)
+  };
   const validateStreet = (street) => {
     const regex = /^[\u0590-\u05FF\s]+$/;
     return regex.test(street);
@@ -119,6 +122,9 @@ export default function Register(props) {
     }
     if (!validateFirstName(formData.firstName)) {
       newErrors.firstName = 'ניתן למלא טקסט בלבד!';
+    }
+    if (!validateCity(formData.city)) {
+      newErrors.city = 'העיר צריכה להיות אמיתי וקיימת ברשימה';
     }
     if (!validateLastName(formData.lastName)) {
       newErrors.lastName = 'ניתן למלא טקסט בלבד!';
@@ -276,6 +282,7 @@ export default function Register(props) {
               </datalist >
             )}
           </div>
+        {errors.city && <div style={{ color: 'red' }}>{errors.city}</div>}
         </div>
         <div style={styles.inputGroup}>
           <label>שם רחוב</label>
