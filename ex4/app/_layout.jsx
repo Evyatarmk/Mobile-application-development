@@ -16,6 +16,8 @@ return (
   }}>
 <Stack.Screen name="index" />
 <Stack.Screen name="EditItemScreen" />
+<Stack.Screen name="AddItemScreen" />
+<Stack.Screen name="ItemDetailsScreen" />
 <Stack.Screen name="ListScreen" />
 </Stack>
 

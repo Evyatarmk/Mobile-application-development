@@ -1,34 +1,32 @@
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import { useState } from "react";
 import { View, StyleSheet } from "react-native";
-import { Input, Button, Text ,Icon} from "react-native-elements";
+import { Input, Button, Text, Icon } from "react-native-elements";
 import { useItems } from "./Context/ItemsContext";
 import { Ionicons } from "@expo/vector-icons";
 
-const EditItemScreen = () => {
+const AddItemScreen = () => {
   const router = useRouter();
-  const params = useLocalSearchParams();
-  const item = JSON.parse(params.item);
-  const { editItem } = useItems();
+  const { addItem } = useItems();
 
-  const [name, setName] = useState(item.name);
-  const [quantity, setQuantity] = useState(item.quantity);
-  const [description, setDescription] = useState(item.description || "");
+  const [name, setName] = useState("");
+  const [quantity, setQuantity] = useState(1);
+  const [description, setDescription] = useState("");
 
-  const saveEdit = () => {
+  const saveItem = () => {
     if (!name.trim()) return;
-    editItem(item.id, name, quantity, description);
+    addItem({ id: "", name, quantity, description });
     router.back();
   };
 
-  const cancelEdit = () => router.back();
+  const cancel = () => router.back();
 
   const increaseQuantity = () => setQuantity((prev) => prev + 1);
   const decreaseQuantity = () => setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
 
   return (
     <View style={styles.container}>
-      <Text h4 style={styles.title}>עריכת פריט</Text>
+      <Text h4 style={styles.title}>הוספת פריט</Text>
 
       <Input
         placeholder="שם פריט"
@@ -36,6 +34,7 @@ const EditItemScreen = () => {
         onChangeText={setName}
         leftIcon={{ type: "font-awesome", name: "tag", color: "#007bff" }}
         inputStyle={{ textAlign: "right" }} 
+
       />
 
       <Input
@@ -44,7 +43,8 @@ const EditItemScreen = () => {
         onChangeText={setDescription}
         leftIcon={<Icon name="description" size={24} color="#007bff" />}
         inputStyle={{ textAlign: "right" }} 
-        />
+      />
+
 
       <View style={styles.quantityContainer}>
         <Text style={styles.label}>כמות:</Text>
@@ -62,26 +62,16 @@ const EditItemScreen = () => {
           keyboardType="numeric"
           containerStyle={styles.quantityInputContainer}
           inputStyle={styles.quantityInput}
-        />   
-           <Button
+        />
+        <Button
           buttonStyle={styles.iconButton}
           icon={<Ionicons name="remove" size={20} color="white" />}
           onPress={decreaseQuantity}
         />
-
       </View>
 
-      <Button
-        title="שמור שינויים"
-        buttonStyle={styles.saveButton}
-        onPress={saveEdit}
-      />
-
-      <Button
-        title="ביטול"
-        buttonStyle={styles.cancelButton}
-        onPress={cancelEdit}
-      />
+      <Button title="הוסף פריט" buttonStyle={styles.saveButton} onPress={saveItem} />
+      <Button title="ביטול" buttonStyle={styles.cancelButton} onPress={cancel} />
     </View>
   );
 };
@@ -107,7 +97,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     marginRight: 10,
-
   },
   iconButton: {
     backgroundColor: "#007bff",
@@ -136,4 +125,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default EditItemScreen;
+export default AddItemScreen;

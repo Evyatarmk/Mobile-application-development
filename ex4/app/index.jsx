@@ -1,15 +1,28 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "expo-router";
 import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { useItems } from "./Context/ItemsContext";
 
 export default function App() {
+  const [cartCount, setCartCount] = useState(0); // דוגמה למספר פריטים בעגלה
+  const { items } = useItems();
+  useEffect(()=>{
+    setCartCount(items.length)
+  },[items])
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>ברוכים הבאים לרשימת הקניות!</Text>
+      {/* כפתור עגלה עם מספר הפריטים */}
+      <View style={styles.cartContainer}>
+        <Ionicons name="cart" size={28} color="#007bff" />
+        <Text style={styles.cartCount}>{cartCount}</Text>
+      </View>
+
+      <Text style={styles.title}>ברוכים הבאים לרשימת הקניות שלכם</Text>
 
       <TouchableOpacity style={styles.button}>
         <Link href="/ListScreen" asChild>
-          <Text style={styles.buttonText}>מעבר לרשימת פריטים</Text>
+          <Text style={styles.buttonText}>מעבר לרשימה</Text>
         </Link>
       </TouchableOpacity>
     </View>
@@ -29,6 +42,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#343a40",
     marginBottom: 20,
+    textAlign:"center"
   },
   button: {
     backgroundColor: "#007bff",
@@ -45,5 +59,22 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 18,
     fontWeight: "bold",
+  },
+  cartContainer: {
+    position: "absolute",
+    top: 20,
+    right: 20,
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#f1f1f1",
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 20,
+  },
+  cartCount: {
+    marginLeft: 8,
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#007bff",
   },
 });
